@@ -53,7 +53,7 @@ F_CPU = 1000000
 AVRDUDE_PROGRAMMER = avrispmkII
 
 # com1 = serial port. Use lpt1 to connect to parallel port.
-AVRDUDE_PORT = /dev/usb    # programmer connected to serial device
+AVRDUDE_PORT = usb    # programmer connected to serial device
 
 # Output format. (can be srec, ihex, binary)
 FORMAT = ihex

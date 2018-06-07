@@ -14,6 +14,8 @@
 		6317A91B20C9352F001E3232 /* Index */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Index; sourceTree = BUILT_PRODUCTS_DIR; };
 		6317A91E20C9352F001E3232 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		6317A92120C9352F001E3232 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		6317B0BA20C9B8AB00143413 /* uartlib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = uartlib.h; sourceTree = "<group>"; };
+		6317B0BB20C9BC2C00143413 /* adclib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = adclib.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -37,6 +39,8 @@
 			isa = PBXGroup;
 			children = (
 				6317A91E20C9352F001E3232 /* main.c */,
+				6317B0BA20C9B8AB00143413 /* uartlib.h */,
+				6317B0BB20C9BC2C00143413 /* adclib.h */,
 				6317A92020C9352F001E3232 /* Makefiles */,
 			);
 			path = atmega32;
