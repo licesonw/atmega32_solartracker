@@ -16,6 +16,13 @@
 		6317A92120C9352F001E3232 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		6317B0BA20C9B8AB00143413 /* uartlib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = uartlib.h; sourceTree = "<group>"; };
 		6317B0BB20C9BC2C00143413 /* adclib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = adclib.h; sourceTree = "<group>"; };
+		6317B0BD20C9CF0400143413 /* servolib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = servolib.h; sourceTree = "<group>"; };
+		63E6F52420CC811300AFAA14 /* twimaster.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = twimaster.c; sourceTree = "<group>"; };
+		63E6F52520CC811300AFAA14 /* lcdpcf8574.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lcdpcf8574.h; sourceTree = "<group>"; };
+		63E6F52620CC811300AFAA14 /* pcf8574.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pcf8574.h; sourceTree = "<group>"; };
+		63E6F52720CC811300AFAA14 /* i2cmaster.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = i2cmaster.h; sourceTree = "<group>"; };
+		63E6F52820CC811300AFAA14 /* pcf8574.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pcf8574.c; sourceTree = "<group>"; };
+		63E6F52920CC811300AFAA14 /* lcdpcf8574.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lcdpcf8574.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -39,8 +46,15 @@
 			isa = PBXGroup;
 			children = (
 				6317A91E20C9352F001E3232 /* main.c */,
+				63E6F52720CC811300AFAA14 /* i2cmaster.h */,
+				63E6F52920CC811300AFAA14 /* lcdpcf8574.c */,
+				63E6F52520CC811300AFAA14 /* lcdpcf8574.h */,
+				63E6F52820CC811300AFAA14 /* pcf8574.c */,
+				63E6F52620CC811300AFAA14 /* pcf8574.h */,
+				63E6F52420CC811300AFAA14 /* twimaster.c */,
 				6317B0BA20C9B8AB00143413 /* uartlib.h */,
 				6317B0BB20C9BC2C00143413 /* adclib.h */,
+				6317B0BD20C9CF0400143413 /* servolib.h */,
 				6317A92020C9352F001E3232 /* Makefiles */,
 			);
 			path = atmega32;

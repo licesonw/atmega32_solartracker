@@ -1,12 +1,15 @@
 //
 //  adclib.h
-//  All
+//  Library for the ADC
 //
 //  Created by David Lichtenwalter on 07.06.18.
 //  Copyright © 2018 David Lichtenwalter. All rights reserved.
 //
 
-uint8_t ADC_ReadChannel0( void );
+#ifndef ADCLIB_H
+#define ADCLIB_H
+
+uint8_t ADC_ReadChannel( uint8_t channel );
 void ADC_Init(void);
 
 void ADC_Init(void)
@@ -26,13 +29,16 @@ void ADC_Init(void)
     // 8bit mode: only read ADCH register
 }
 
-
-uint8_t ADC_ReadChannel0(void)
+uint8_t ADC_ReadChannel(uint8_t channel)
 {
-    ADMUX &= ~((1<<MUX0)|(1<<MUX1)|(1<<MUX2)|(1<<MUX3)|(1<<MUX4)); // Choose channel 0
+    // Choose channel with bitmask
+    uint8_t muxmask = channel & 0x1F;
+    ADMUX |= muxmask;
+    
     ADCSRA |= (1<<ADSC);            // Single conversion
     while (!(ADCSRA & (1<<ADSC)) ) {   // Wait for conversion
     }
     return ADCH;                    // Read adc
 }
 
+#endif

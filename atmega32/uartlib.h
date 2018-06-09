@@ -1,10 +1,13 @@
 //
 //  uartlib.h
-//  All
+//  Library for the USART
 //
 //  Created by David Lichtenwalter on 07.06.18.
 //  Copyright © 2018 David Lichtenwalter. All rights reserved.
 //
+
+#ifndef UARTLIB_H
+#define UARTLIB_H
 
 #define BAUD 62500UL
 #define UBRR_VAL (F_CPU/(BAUD*16)-1)
@@ -62,3 +65,5 @@ void USART_TransmitString (uint8_t *s)
         s++;
     }
 }
+
+#endif
