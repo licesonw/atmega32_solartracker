@@ -11,13 +11,14 @@
 #include "adclib.h"
 #include "servolib.h"
 
+#define SERVO_UPPER_LIMIT 180
+#define SERVO_LOWER_LIMIT 0
+#define TOLERANCE 100
 
 void IO_Init (void)
 {
-    // OC0 as output: PWM
-    //DDRB |= (1<<PB3);
-    // PC0 as output: LED
-    //DDRC |= (1<<PC0);
+    // Set pullup resistors for LCD
+    PORTC |= (1<<PC0)|(1<<PC1);
 }
 
 int main (void)
@@ -25,46 +26,61 @@ int main (void)
     IO_Init();
     ADC_Init();
     USART_Init();
-    uint8_t adc_val;
-    uint8_t temp = 0;
-    char buf[10];
+    Servo0_Init();
     
     sei();
     
-    lcd_init(LCD_DISP_ON_BLINK);
-    lcd_home();
-    uint8_t led = 0;
-    lcd_led(led);
+    uint16_t adc_val_up = 0;
+    uint16_t adc_val_down = 0;
+    int diff;
+    
+    char buf[10];
+    
+    int servo_deg = 0;
     
     
     while(1)
     {
-//        int i = 0;
-//        int line = 0;
-//        for(i=0; i<10; i++) {
-//            char buf[10];
-//            itoa(i, buf, 10);
-//            lcd_gotoxy(1, line);
-//            lcd_puts("i= ");
-//            itoa(i, buf, 10);
-//            lcd_gotoxy(4, line);
-//            lcd_puts(buf);
-//            line++;
-//            line %= 2;
-//            USART_TransmitString((uint8_t*) buf);
-//            USART_TransmitString((uint8_t*)"\r\n");
-//            _delay_ms(100);
-//        }
-        
-        adc_val = ADC_ReadChannel(2);
-        itoa(adc_val, buf, 10);
-        if(adc_val != temp){
-            lcd_clrscr();
-            lcd_puts(buf);
+        adc_val_up = ADC_ReadChannel(0);
+        _delay_us(10);
+        adc_val_down = ADC_ReadChannel(1);
+        diff = adc_val_up - adc_val_down;
+
+        if (- 1* TOLERANCE > diff || diff > TOLERANCE)
+        {
+            if(adc_val_up > adc_val_down)
+            {
+                servo_deg += 10;
+                if(servo_deg > 180)
+                    servo_deg = 180;
+            }
+
+            else if( adc_val_up < adc_val_down)
+            {
+                servo_deg -= 10;
+                if(servo_deg < 0)
+                    servo_deg = 0;
+            }
+            Servo0_AssumePosition(servo_deg);
         }
-        
-        _delay_ms(50);
-        temp = adc_val;
+
+        itoa(adc_val_up, buf, 10);
+        USART_TransmitString((uint8_t*)"LDR up: \0");
+        USART_TransmitString((uint8_t*)buf);
+        USART_TransmitString((uint8_t*)"\n\0");
+
+        itoa(adc_val_down, buf, 10);
+        USART_TransmitString((uint8_t*)"LDR down: \0");
+        USART_TransmitString((uint8_t*)buf);
+        USART_TransmitString((uint8_t*)"\n\0");
+
+
+        itoa(servo_deg, buf, 10);
+        USART_TransmitString((uint8_t*)"Servo angle: \0");
+        USART_TransmitString((uint8_t*)buf);
+        USART_TransmitString((uint8_t*)"\n\0");
+
+        _delay_ms(5);
         
     }
     
@@ -72,3 +88,4 @@ int main (void)
     
     return 0;
 }
+

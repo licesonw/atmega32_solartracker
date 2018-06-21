@@ -16,6 +16,7 @@
 
 void Servo0_Init(void)
 {
+    DDRB |= (1<<PB3);
     // Timer0 Init
     TCCR0 |= (1<<WGM00)|(1<<WGM01)|(1<<COM01)|(1<<CS01)|(1<<CS00);
 }
@@ -25,6 +26,8 @@ void Servo0_AssumePosition(uint8_t angle)
     // Only allow angles up to 180 degrees
     if(angle > 180)
         angle = 180;
+    else if(angle < 0)
+        angle = 0;
     
     // scale into region from 0 to 1
     double scaled = (double)angle/180;
