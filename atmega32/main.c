@@ -26,7 +26,6 @@ int main (void)
     IO_Init();
     ADC_Init();
     USART_Init();
-    Servo0_Init();
     
     lcd_init(LCD_DISP_ON_BLINK);
     lcd_home();
@@ -34,14 +33,6 @@ int main (void)
     lcd_led(led);
     
     sei();
-    
-    uint16_t adc_val_up = 0;
-    uint16_t adc_val_down = 0;
-    int diff;
-    
-    char buf[10];
-    
-    int servo_deg = 0;
     
     
     while(1)

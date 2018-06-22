@@ -1,43 +1,85 @@
 //
-//  servolib.h
-//  Library for driving a the servo motor
+//  servolib2.h
+//  All
 //
-//  Created by David Lichtenwalter on 07.06.18.
+//  Created by David Lichtenwalter on 22.06.18.
 //  Copyright © 2018 David Lichtenwalter. All rights reserved.
 //
 
-#ifndef SERVOLIB_H
-#define SERVOLIB_H
+#ifndef servolib_h
+#define servolib_h
 
 #include <math.h>
 
-#define SERVO_PWM_LOW 8
-#define SERVO_PWM_HIGH 37
+#define SERVO_PC2_PULSELIMIT_LOW 550
+#define SERVO_PC2_PULSELIMIT_HIGH 2500
+#define SERVO_PC3_PULSELIMIT_LOW 700
+#define SERVO_PC3_PULSELIMIT_HIGH 2500
 
-void Servo0_Init(void)
+// Servos on PC0 - PC4
+volatile unsigned int servo[4] = {1500, 1500, 1500, 1500};
+
+//
+ISR(TIMER1_COMPA_vect)
 {
-    DDRB |= (1<<PB3);
-    // Timer0 Init
-    TCCR0 |= (1<<WGM00)|(1<<WGM01)|(1<<COM01)|(1<<CS01)|(1<<CS00);
+    static unsigned char servo_num = 2;
+    
+    PORTC = (1<<servo_num);          // end pulse for servo (n), start pulse for servo (n+1)
+    OCR1A = servo[servo_num];        // set width of pulse
+    servo_num++;                     // prepare next servo
+    if(servo_num > 4) servo_num = 2; // again from servo 2;
 }
 
-void Servo0_AssumePosition(uint8_t angle)
+void Servo_Init(void)
 {
-    // Only allow angles up to 180 degrees
-    if(angle > 180)
-        angle = 180;
-    else if(angle < 0)
-        angle = 0;
+    // Servos on PC0 and PC1
+    DDRC |= (1<<PC2)|(1<<PC3);
+    
+    TCCR1B |= (1<<WGM12) | (1<<CS11);  // pwm mode 4,CTC, prescale=8
+    TIMSK |= (1<<OCIE1A);             // enable T1_compareA interrupt
+    TCNT1 = 65530;
+}
+
+
+/*
+ Set servo on PC2 position to percentage of range.
+*/
+void ServoPC2_Pos(uint8_t percent)
+{
+    if(percent > 100)
+        percent = 100;
+    else if( percent < 0)
+        percent = 0;
     
     // scale into region from 0 to 1
-    double scaled = (double)angle/180;
+    double scaled = (double)percent/100;
     
     // rescale into region for output compare value
-    scaled = round(scaled * (SERVO_PWM_HIGH - SERVO_PWM_LOW));
+    uint16_t pulse;
+    pulse = SERVO_PC2_PULSELIMIT_LOW +  round(scaled * (SERVO_PC2_PULSELIMIT_HIGH - SERVO_PC2_PULSELIMIT_LOW));
     
-    // calculate output compare value for the PWM pulse
-    uint8_t ocr_val = SERVO_PWM_LOW + (uint8_t)scaled;
-    OCR0 = ocr_val;
+    servo[2] = pulse;
 }
 
-#endif
+
+/*
+ Set servo on PC3 position to percentage of range.
+ */
+void ServoPC3_Pos(uint8_t percent)
+{
+    if(percent > 100)
+        percent = 100;
+    else if( percent < 0)
+        percent = 0;
+    
+    // scale into region from 0 to 1
+    double scaled = (double)percent/100;
+    
+    // rescale into region for output compare value
+    uint16_t pulse;
+    pulse = SERVO_PC3_PULSELIMIT_LOW +  round(scaled * (SERVO_PC3_PULSELIMIT_HIGH - SERVO_PC3_PULSELIMIT_LOW));
+    servo[3] = pulse;
+}
+
+
+#endif /* servolib_h */
