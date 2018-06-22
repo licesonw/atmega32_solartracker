@@ -28,6 +28,11 @@ int main (void)
     USART_Init();
     Servo0_Init();
     
+    lcd_init(LCD_DISP_ON_BLINK);
+    lcd_home();
+    uint8_t led = 0;
+    lcd_led(led);
+    
     sei();
     
     uint16_t adc_val_up = 0;
@@ -41,46 +46,8 @@ int main (void)
     
     while(1)
     {
-        adc_val_up = ADC_ReadChannel(0);
-        _delay_us(10);
-        adc_val_down = ADC_ReadChannel(1);
-        diff = adc_val_up - adc_val_down;
-
-        if (- 1* TOLERANCE > diff || diff > TOLERANCE)
-        {
-            if(adc_val_up > adc_val_down)
-            {
-                servo_deg += 10;
-                if(servo_deg > 180)
-                    servo_deg = 180;
-            }
-
-            else if( adc_val_up < adc_val_down)
-            {
-                servo_deg -= 10;
-                if(servo_deg < 0)
-                    servo_deg = 0;
-            }
-            Servo0_AssumePosition(servo_deg);
-        }
-
-        itoa(adc_val_up, buf, 10);
-        USART_TransmitString((uint8_t*)"LDR up: \0");
-        USART_TransmitString((uint8_t*)buf);
-        USART_TransmitString((uint8_t*)"\n\0");
-
-        itoa(adc_val_down, buf, 10);
-        USART_TransmitString((uint8_t*)"LDR down: \0");
-        USART_TransmitString((uint8_t*)buf);
-        USART_TransmitString((uint8_t*)"\n\0");
-
-
-        itoa(servo_deg, buf, 10);
-        USART_TransmitString((uint8_t*)"Servo angle: \0");
-        USART_TransmitString((uint8_t*)buf);
-        USART_TransmitString((uint8_t*)"\n\0");
-
-        _delay_ms(5);
+        lcd_puts("XYZ\0");
+        _delay_ms(2000);
         
     }
     
