@@ -12,7 +12,7 @@
 #include "servolib.h"
 
 #define TOLERANCE_MIN 30
-#define TOLERANCE_MAX 200
+#define TOLERANCE_MAX 250
 
 #define SERVO_STEPSIZE 1
 #define SERVO_VERT_MIN 0
@@ -29,10 +29,11 @@ void Init (void)
     Servo_Init();
     
     // LCD Initialization
-    _delay_ms(1000);
+    _delay_ms(2000);
     lcd_init(LCD_DISP_ON_BLINK);
     lcd_home();
     lcd_led(0);
+    _delay_ms(1000);
     
     // Set pullup resistors for LCD
     PORTC |= (1<<PC0)|(1<<PC1);
@@ -46,6 +47,8 @@ void Init (void)
 int main (void)
 {
     Init();
+    
+    // Variable declaration
     int servo_vertical = 50;
     int servo_horizontal = 50;
     
@@ -152,20 +155,11 @@ int main (void)
             tolerance = TOLERANCE_MIN + round(scaled*(TOLERANCE_MAX - TOLERANCE_MIN));
             dtostrf(tolerance, 4, 0, buf);
             lcd_puts(buf);
-            lcd_puts("\0");
             
             cnt = 0;
         }
-
-        //lcd_clrscr();
-        //lcd_puts("Testing");
-        _delay_ms(DELAY_IN_MS);
         
-//        USART_TransmitInteger(avg_top, "AVG top: ");
-//        USART_TransmitInteger(avg_bottom, "AVG bottom: ");
-//        USART_TransmitInteger(avg_right, "AVG right: ");
-//        USART_TransmitInteger(avg_left, "AVG left: ");
-//        USART_TransmitInteger(solar_voltage, "Solar voltage: ");
+        _delay_ms(DELAY_IN_MS);
         
     }
     
