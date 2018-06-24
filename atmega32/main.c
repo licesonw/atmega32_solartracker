@@ -12,12 +12,14 @@
 #include "servolib.h"
 
 #define TOLERANCE 100
+#define SERVO_STEPSIZE 1
+
 #define SERVO_VERT_MIN 0
 #define SERVO_VERT_MAX 50
 #define SERVO_HOR_MIN 0
 #define SERVO_HOR_MAX 100
 
-#define SERVO_STEPSIZE 1
+#define DELAY_IN_MS 10
 
 void Init (void)
 {
@@ -26,17 +28,16 @@ void Init (void)
     Servo_Init();
     
     // LCD Initialization
-//    _delay_ms(1000);
-//    lcd_init(LCD_DISP_ON_BLINK);
-//    lcd_home();
-//    uint8_t led = 0;
-//    lcd_led(led);
+    _delay_ms(1000);
+    lcd_init(LCD_DISP_ON_BLINK);
+    lcd_home();
+    lcd_led(0);
     
     // Set pullup resistors for LCD
     PORTC |= (1<<PC0)|(1<<PC1);
     
-    // Set ADC inputs direction
-    PORTA &= ~((1<<PA0)|(1<<PA1)|(1<<PA2)|(1<<PA3));
+    // Set ADC data direction as input
+    PORTA &= ~((1<<PA0)|(1<<PA1)|(1<<PA2)|(1<<PA3)|(1<<PA4)|(1<<PA5));
     
     sei();
 }
@@ -55,12 +56,19 @@ int main (void)
     int diff_vertical = 0;
     int diff_horizontal = 0;
     
-    char buf[4];
+    int tolerance = 100;
+    
+    char buf[20];
+    float solar_voltage;
+    uint8_t cnt = 0;
     
     uint16_t ldr_right_bottom;
     uint16_t ldr_left_bottom;
     uint16_t ldr_right_top;
     uint16_t ldr_left_top;
+    
+    uint16_t solar_adcval;
+    uint16_t poti_adcval;
     
     while(1)
     {
@@ -72,6 +80,10 @@ int main (void)
         ldr_right_top = ADC_ReadChannel(2);
         _delay_us(10);
         ldr_left_top = ADC_ReadChannel(3);
+        _delay_us(10);
+        solar_adcval = ADC_ReadChannel(4);
+        _delay_us(10);
+        poti_adcval = ADC_ReadChannel(5);
         
         // Calculate average values
         avg_top = (ldr_left_top + ldr_right_top) / 2;
@@ -119,33 +131,28 @@ int main (void)
             ServoPC2_Pos(servo_horizontal);
         }
         
-        _delay_ms(10);
         
+        // Recalculate voltage on LCD every 10 iterations
+        cnt++;
+        if(cnt > 10)
+        {
+            lcd_gotoxy(0, 0);
+            lcd_puts("Solar:");
+            solar_voltage = (float) solar_adcval / 205 ;
+            sprintf(buf, "%f", solar_voltage);
+            dtostrf(solar_voltage, 5, 2, buf);
+            lcd_puts(buf);
+            lcd_puts("V\0");
+            cnt = 0;
+        }
         
-        USART_TransmitString("AVG top:" );
-        itoa(avg_top, buf, 10);
-        USART_TransmitString(buf);
-        USART_TransmitString("\n\0");
+        _delay_ms(DELAY_IN_MS);
         
-        USART_TransmitString("AVG bottom:" );
-        itoa(avg_bottom, buf, 10);
-        USART_TransmitString(buf);
-        USART_TransmitString("\n\0");
-        
-        USART_TransmitString("AVG left:" );
-        itoa(avg_left, buf, 10);
-        USART_TransmitString(buf);
-        USART_TransmitString("\n\0");
-        
-        USART_TransmitString("AVG right:" );
-        itoa(avg_right, buf, 10);
-        USART_TransmitString(buf);
-        USART_TransmitString("\n\0");
-        
-        
-        
-        
-        
+//        USART_TransmitInteger(avg_top, "AVG top: ");
+//        USART_TransmitInteger(avg_bottom, "AVG bottom: ");
+//        USART_TransmitInteger(avg_right, "AVG right: ");
+//        USART_TransmitInteger(avg_left, "AVG left: ");
+//        USART_TransmitInteger(solar_voltage, "Solar voltage: ");
         
     }
     

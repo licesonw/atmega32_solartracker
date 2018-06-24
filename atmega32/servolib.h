@@ -19,7 +19,7 @@
 // Servos on PC0 - PC4
 volatile unsigned int servo[4] = {1500, 1500, 1500, 1500};
 
-//
+
 ISR(TIMER1_COMPA_vect)
 {
     static unsigned char servo_num;
@@ -30,6 +30,10 @@ ISR(TIMER1_COMPA_vect)
     if(servo_num > 4) servo_num = 0; // again from servo 2;
 }
 
+
+/**
+ @brief     Intialize TIMER1 for the servo motors.
+ */
 void Servo_Init(void)
 {
     // Servos on PC0 and PC1
@@ -41,8 +45,8 @@ void Servo_Init(void)
 }
 
 
-/*
- Set servo on PC2 position to percentage of range.
+/**
+ @brief     Set position of servo on PC2 to a percentage of the full range.
 */
 void ServoPC2_Pos(uint8_t percent)
 {
@@ -62,8 +66,8 @@ void ServoPC2_Pos(uint8_t percent)
 }
 
 
-/*
- Set servo on PC3 position to percentage of range.
+/**
+ @brief     Set position of servo on PC3 to a percentage of the full range.
  */
 void ServoPC3_Pos(uint8_t percent)
 {

@@ -9,6 +9,8 @@
 #ifndef UARTLIB_H
 #define UARTLIB_H
 
+#include <stdlib.h>
+
 #define BAUD 62500UL
 #define UBRR_VAL (F_CPU/(BAUD*16)-1)
 
@@ -19,8 +21,8 @@ void USART_TransmitString (unsigned char *s);
 unsigned char* USART_ReceiveString(void);
 
 
-/*
- Init USART with a baudrate set above. Enable TX and RX.
+/**
+ @brief     Init USART with a baudrate of 62500. Enable TX and RX.
 */
 void USART_Init(void) {
     UBRRH = UBRR_VAL >> 8;
@@ -29,12 +31,21 @@ void USART_Init(void) {
     UCSRC = (1<<URSEL)|(1<<UCSZ1)|(1<<UCSZ0);
 }
 
+
+/**
+ @brief     Transmit a single byte via USART.
+ */
 void USART_Transmit(uint8_t data) {
     while(!(UCSRA & (1<<UDRE))) {
     }
     UDR = data;
 }
 
+
+/**
+ @brief     Reveive a single byte via USART.
+ @return    Returns the reveived byte.
+ */
 unsigned char USART_Receive(void) {
     while(!(UCSRA & (1<<RXC))) {
         // wait
@@ -43,6 +54,11 @@ unsigned char USART_Receive(void) {
     return UDR;
 }
 
+
+/**
+ @brief     Reveive a string via USART.
+ @return    Returns the string as a char array.
+ */
 unsigned char* USART_ReceiveString(void)
 {
     unsigned char c;
@@ -57,6 +73,10 @@ unsigned char* USART_ReceiveString(void)
     return str;
 }
 
+
+/**
+ @brief     Transmit a string via USART.
+ */
 void USART_TransmitString (uint8_t *s)
 {
     while (*s)
@@ -64,6 +84,19 @@ void USART_TransmitString (uint8_t *s)
         USART_Transmit(*s);
         s++;
     }
+}
+
+
+/**
+ @brief     Transmit an integer together with a descriptive string.
+ */
+void USART_TransmitInteger(int integer, unsigned char *str)
+{
+    char buf[10];
+    USART_TransmitString(str);
+    itoa(integer, buf, 10);
+    USART_TransmitString((uint8_t*)buf);
+    USART_TransmitString((uint8_t*)"\n\0");
 }
 
 #endif

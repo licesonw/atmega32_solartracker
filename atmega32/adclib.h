@@ -12,24 +12,28 @@
 uint16_t ADC_ReadChannel( uint8_t channel );
 void ADC_Init(void);
 
+
+/**
+ @brief     Initialize the ADC with a prescaler of 64.
+ */
 void ADC_Init(void)
 {
-    // 8 bit mode
+    // Internal reference voltage
     ADMUX |= (1<<REFS0);
     
     // Enable
     ADCSRA |= (1<<ADEN);
     
-    // free running mode
-    //SFIOR &= ~((1<<ADTS2)|(1<<ADTS1)|(1<<ADTS0));
-    
     // Prescaler of 64
     ADCSRA &= ~(1<<ADPS0);
     ADCSRA |= (1<<ADPS2)|(1<<ADPS1);
-    
-    // 8bit mode: only read ADCH register
 }
 
+
+/**
+ @brief     Read an ADC channel.
+ @return    Returns the 10bit ADC value.
+ */
 uint16_t ADC_ReadChannel(uint8_t channel)
 {
     ADMUX = (ADMUX & 0xE0) | (channel & 0x1F);  // Set channel via bitmask
