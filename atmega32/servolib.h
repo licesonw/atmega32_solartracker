@@ -11,8 +11,8 @@
 
 #include <math.h>
 
-#define SERVO_PC2_PULSELIMIT_LOW 550
-#define SERVO_PC2_PULSELIMIT_HIGH 2500
+#define SERVO_PC2_PULSELIMIT_LOW 560
+#define SERVO_PC2_PULSELIMIT_HIGH 2400
 #define SERVO_PC3_PULSELIMIT_LOW 700
 #define SERVO_PC3_PULSELIMIT_HIGH 2500
 
@@ -22,12 +22,12 @@ volatile unsigned int servo[4] = {1500, 1500, 1500, 1500};
 //
 ISR(TIMER1_COMPA_vect)
 {
-    static unsigned char servo_num = 2;
+    static unsigned char servo_num;
     
     PORTC = (1<<servo_num);          // end pulse for servo (n), start pulse for servo (n+1)
     OCR1A = servo[servo_num];        // set width of pulse
     servo_num++;                     // prepare next servo
-    if(servo_num > 4) servo_num = 2; // again from servo 2;
+    if(servo_num > 4) servo_num = 0; // again from servo 2;
 }
 
 void Servo_Init(void)
