@@ -11,9 +11,10 @@
 #include "adclib.h"
 #include "servolib.h"
 
-#define TOLERANCE 100
-#define SERVO_STEPSIZE 1
+#define TOLERANCE_MIN 30
+#define TOLERANCE_MAX 200
 
+#define SERVO_STEPSIZE 1
 #define SERVO_VERT_MIN 0
 #define SERVO_VERT_MAX 50
 #define SERVO_HOR_MIN 0
@@ -96,7 +97,7 @@ int main (void)
         diff_horizontal = abs(avg_left - avg_right);
         
         // Change vertical angle if out of tolerance
-        if(diff_vertical > TOLERANCE)
+        if(diff_vertical > tolerance)
         {
             if(avg_top < avg_bottom)
             {
@@ -114,7 +115,7 @@ int main (void)
         }
         
         // Change horizontal if out of tolerance
-        if(diff_horizontal > TOLERANCE)
+        if(diff_horizontal > tolerance)
         {
             if(avg_left > avg_right)
             {
@@ -132,20 +133,32 @@ int main (void)
         }
         
         
-        // Recalculate voltage on LCD every 10 iterations
+        // Write on LCD every 100 iterations
         cnt++;
-        if(cnt > 10)
+        if(cnt > 100)
         {
+            // First line: Solar voltage
             lcd_gotoxy(0, 0);
             lcd_puts("Solar:");
             solar_voltage = (float) solar_adcval / 205 ;
-            sprintf(buf, "%f", solar_voltage);
             dtostrf(solar_voltage, 5, 2, buf);
             lcd_puts(buf);
-            lcd_puts("V\0");
+            lcd_puts("V");
+
+            // Second line: Tolerance controlled with Poti
+            lcd_gotoxy(0, 1);
+            lcd_puts("Tol: ");
+            double scaled = (double)poti_adcval / 1023;
+            tolerance = TOLERANCE_MIN + round(scaled*(TOLERANCE_MAX - TOLERANCE_MIN));
+            dtostrf(tolerance, 4, 0, buf);
+            lcd_puts(buf);
+            lcd_puts("\0");
+            
             cnt = 0;
         }
-        
+
+        //lcd_clrscr();
+        //lcd_puts("Testing");
         _delay_ms(DELAY_IN_MS);
         
 //        USART_TransmitInteger(avg_top, "AVG top: ");

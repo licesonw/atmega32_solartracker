@@ -14,11 +14,11 @@
 
 /* define CPU frequency in Mhz here if not defined in Makefile */
 #ifndef F_CPU
-#define F_CPU 1000000UL
+#define F_CPU 8000000UL
 #endif
 
 /* I2C clock in Hz */
-#define SCL_CLOCK  50000L
+#define SCL_CLOCK  100000L
 
 
 /*************************************************************************
