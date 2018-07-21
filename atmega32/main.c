@@ -14,13 +14,13 @@
 #define TOLERANCE_MIN 30
 #define TOLERANCE_MAX 250
 
-#define SERVO_STEPSIZE 1
+#define SERVO_STEPSIZE 0.25
 #define SERVO_VERT_MIN 0
 #define SERVO_VERT_MAX 50
 #define SERVO_HOR_MIN 0
 #define SERVO_HOR_MAX 100
 
-#define DELAY_IN_MS 10
+#define DELAY_IN_MS 7
 
 void Init (void)
 {
@@ -49,8 +49,8 @@ int main (void)
     Init();
     
     // Variable declaration
-    int servo_vertical = 50;
-    int servo_horizontal = 50;
+    double servo_vertical = 50;
+    double servo_horizontal = 50;
     
     int avg_top = 0;
     int avg_bottom = 0;
@@ -114,7 +114,7 @@ int main (void)
                 if(servo_vertical < SERVO_VERT_MIN)
                     servo_vertical = SERVO_VERT_MIN;
             }
-            ServoPC3_Pos(servo_vertical);
+            ServoPC3_Pos(round(servo_vertical));
         }
         
         // Change horizontal if out of tolerance
@@ -132,18 +132,19 @@ int main (void)
                 if(servo_horizontal > SERVO_HOR_MAX)
                     servo_horizontal = SERVO_HOR_MAX;
             }
-            ServoPC2_Pos(servo_horizontal);
+            ServoPC2_Pos(round(servo_horizontal));
         }
         
         
         // Write on LCD every 100 iterations
         cnt++;
-        if(cnt > 100)
+        if(cnt > 200)
         {
             // First line: Solar voltage
             lcd_gotoxy(0, 0);
             lcd_puts("Solar:");
-            solar_voltage = (float) solar_adcval / 205 ;
+            // Scaling the voltage back to 7.2V range
+            solar_voltage = (float) solar_adcval / 142 ;
             dtostrf(solar_voltage, 5, 2, buf);
             lcd_puts(buf);
             lcd_puts("V");
