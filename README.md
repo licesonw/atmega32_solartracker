@@ -8,7 +8,7 @@ The 2-Aaxis solar tracker includes the following components:
 * 4 light dependent resistors (LDR)
 * HD44780 based 16x2 LCD driven with I2C PCF8574 backpack
 
-For displaying data on the LDC, the library by [Davide Gironi](http://davidegironi.blogspot.com/2013/06/an-avr-atmega-library-for-hd44780-based.html#.Wy-JMS3qigQ) was utilized.
+For displaying data on the LCD, the library by [Davide Gironi](http://davidegironi.blogspot.com/2013/06/an-avr-atmega-library-for-hd44780-based.html#.Wy-JMS3qigQ) was utilized.
 
 The project was entirely developed on MacOS 10.13 High Sierra and Xcode 9 with the [CrossPack](https://www.obdev.at/products/crosspack/index.html) environment and the Xcode plugin [xavr](https://github.com/jawher/xavr).
 
